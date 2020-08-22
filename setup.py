@@ -7,4 +7,13 @@ setup(
    description='Personal project package',
    author='atgm1113',
    author_email='atgm1113@gmail.com',
-   packages=find_packages(include=[], exclude=[]))
+   packages=find_packages(include=["src", 
+                                   "src.data_process",
+                                   "src.text_process", 
+                                   "src.main", 
+                                   "src.model", 
+                                   "src.tests", 
+                                   "src.utils", 
+                                   "src.",
+                                   "src.bert_semantic_classifier"], 
+                                   exclude=[]))

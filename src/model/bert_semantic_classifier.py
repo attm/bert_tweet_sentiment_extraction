@@ -20,3 +20,7 @@ def get_bert(tf_hub_url : str) -> np.ndarray:
     vocab_path = bert_layer.resolved_object.vocab_file.asset_path.numpy().decode("utf-8")
     # Creating new tokenizer
     return bert_layer, vocab_path
+
+def build_bert_model():
+    pass
+

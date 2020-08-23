@@ -9,11 +9,8 @@ setup(
    author_email='atgm1113@gmail.com',
    packages=find_packages(include=["src", 
                                    "src.data_process",
-                                   "src.text_process", 
                                    "src.main", 
-                                   "src.model", 
+                                   "src.model",
                                    "src.tests", 
-                                   "src.utils", 
-                                   "src.",
-                                   "src.bert_semantic_classifier"], 
+                                   "src.utils"], 
                                    exclude=[]))

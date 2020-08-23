@@ -1,4 +1,5 @@
 bert-for-tf2
+transformers
 tensorflow_hub
 pandas
 numpy

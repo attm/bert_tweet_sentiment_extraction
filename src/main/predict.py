@@ -2,7 +2,7 @@ import os
 from os.path import join as pjoin
 import numpy as np
 import pandas as pd
-from src.model.bert_semantic_classifier import build_bert_model
+from src.model.hugface_distilbert_clf import build_model
 
 
 cwd = os.getcwd()
@@ -23,7 +23,7 @@ def main():
     print(f"\nLoaded datasets from {BERT_DATASETS_FOLDER_PATH}")
     print(f"Shape of X_test_ids is {X_test_ids.shape}")
 
-    bert_model = build_bert_model()
+    bert_model = build_model()
     bert_model.load_weights(BERT_SAVED_CP)
     y = bert_model.predict([X_test_ids, X_test_ids_types, X_test_attn_mask])
     y_pred = np.argmax(y, axis=1)

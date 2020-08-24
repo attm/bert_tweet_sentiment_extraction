@@ -8,7 +8,7 @@ setup(
    author='atgm1113',
    author_email='atgm1113@gmail.com',
    packages=find_packages(include=["src", 
-                                   "src.data_process",
+                                   "src.data",
                                    "src.main", 
                                    "src.model",
                                    "src.tests", 

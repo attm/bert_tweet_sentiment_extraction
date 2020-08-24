@@ -4,31 +4,32 @@ from tensorflow.keras import Model
 from tensorflow.keras.optimizers import Adam
 import tensorflow as tf
 import tensorflow_hub as tf_hub
+from transformers import BertTokenizerFast
 
 
 BERT_LAYER_HUB_URL = "https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/2"
 
 
-def get_bert(tf_hub_url : str) -> np.ndarray:
+def get_tokenizer() -> BertTokenizerFast:
     """
-    Downloads bert layer.
+    Returns tokenizer for that model.
 
     Parameters:
-        tf_hub_url (str) : url of the bert model.
+        None
     Returns:
-        bert_layer (str) : keras bert layer.
-        vocab_path (path) : vocab file path used for tokenizing.
+        tokenizer (BertTokenizerFast) : loaded and set tokenizer.
     """
     # Loading bert from tf hub
-    print(f"\nTrying to load BERT layer from {tf_hub_url}\n")
-    bert_layer = tf_hub.KerasLayer(tf_hub_url, trainable=True)
-    print(f"\nLoaded BERT layer from {tf_hub_url}")
+    print(f"\nTrying to load BERT layer from {BERT_LAYER_HUB_URL}\n")
+    bert_layer = tf_hub.KerasLayer(BERT_LAYER_HUB_URL, trainable=False)
+    print(f"\nLoaded BERT layer from {BERT_LAYER_HUB_URL}")
     # Getting vocab from layer
     vocab_path = bert_layer.resolved_object.vocab_file.asset_path.numpy().decode("utf-8")
     # Creating new tokenizer
-    return bert_layer, vocab_path
+    tokenizer = BertTokenizerFast(vocab_path)
+    return tokenizer
 
-def build_bert_model(bert_tf_hub_url : str = BERT_LAYER_HUB_URL):
+def build_model(bert_tf_hub_url : str = BERT_LAYER_HUB_URL):
     """
     Builds bert based model. 
 
@@ -47,10 +48,8 @@ def build_bert_model(bert_tf_hub_url : str = BERT_LAYER_HUB_URL):
     bert_input = [ids_input, attn_mask, ids_tokens_input]
 
     pooled, sequence = bert_layer(bert_input)
-    x = Dense(512, activation="relu")(pooled)
-    x = Dropout(0.2)(x)
-    x = Dense(3, activation="softmax")(x)
+    x = Dense(3, activation="softmax")(pooled)
 
     bert_model = Model([ids_input, ids_tokens_input, attn_mask], x)
-    bert_model.compile(optimizer=Adam(), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+    bert_model.compile(optimizer=Adam(learning_rate=0.01), loss="sparse_categorical_crossentropy", metrics=["accuracy"])
     return bert_model

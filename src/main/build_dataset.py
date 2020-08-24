@@ -5,27 +5,30 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tf_hub
-import bert
 import transformers
 from transformers import BertTokenizerFast
-from src.data_process.dataset import build_bert_datasets
-from src.model.tf_hub_bert_clf import get_bert
+from src.data.dataset import build_bert_datasets
+from src.model.tf_hub_bert_clf import get_tokenizer
 
 
+# Datasets options
+TF_HUB_BERT_DATASET_BUILD = False
+DISTILBERT_DATASET_BUILD = True
 cwd = os.getcwd()
 # Data folders
 RAW_DATA_FOLDER_PATH = pjoin(cwd, "data/raw")
 TRAIN_CSV_PATH = pjoin(RAW_DATA_FOLDER_PATH, "train.csv")
 TEST_CSV_PATH = pjoin(RAW_DATA_FOLDER_PATH, "test.csv")
 DATASETS_FOLDER_PATH = pjoin(cwd, "data/datasets")
+# Datasets subfolder
 TF_HUB_BERT_FOLDER_PATH = pjoin(DATASETS_FOLDER_PATH, "tf_hub_bert")
+DISTIL_BERT_FOLDER_PATH = pjoin(DATASETS_FOLDER_PATH, "distil_bert")
 # TF_HUB BERT
 TF_HUB_BERT_URL = "https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/2"
 
 def build_tf_hub_bert_datasets(datasets_save_folder_path : str) -> None:
     # Generating and saving train
-    bert_layer, bert_vocab = get_bert(TF_HUB_BERT_URL)
-    bert_tokenizer = BertTokenizerFast(bert_vocab)
+    bert_tokenizer = get_tokenizer()
     X_train_ids, X_train_ids_types, X_train_attn_mask, y_train = build_bert_datasets(TRAIN_CSV_PATH, bert_tokenizer)
 
     np.save(pjoin(datasets_save_folder_path, "X_train_ids.npy"), X_train_ids)
@@ -44,7 +47,11 @@ def build_tf_hub_bert_datasets(datasets_save_folder_path : str) -> None:
 
 def main():
     # Building tf_hub bert datasets
-    build_tf_hub_bert_datasets(TF_HUB_BERT_FOLDER_PATH)
+    if TF_HUB_BERT_DATASET_BUILD:
+        build_tf_hub_bert_datasets(TF_HUB_BERT_FOLDER_PATH)
+
+    if DISTILBERT_DATASET_BUILD:
+        pass
 
 if __name__ == "__main__":
     main()
